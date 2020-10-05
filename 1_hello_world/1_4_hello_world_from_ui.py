@@ -16,7 +16,7 @@ if __name__ == "__main__":
     app = QApplication([])
 
     # Por alguma razão, o arquivo hello_world.ui não carrega sem usar o path inteiro
-    window = uic.loadUi(r"ia-cc-2020-2-jordanmattos\1_hello_world\hello_world.ui")
+    window = uic.loadUi(r"ia-cc-2020-2-jordan\1_hello_world\hello_world.ui")
 
     hello_label = window.findChild(QLabel, 'helloLabel')
     hello_label.setVisible(False)
