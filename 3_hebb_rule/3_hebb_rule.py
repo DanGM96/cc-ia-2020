@@ -24,4 +24,5 @@ def hebb_rule(dados):
         weight[n] = weight[n] + y # Bias é weight[n]
         print(weight)
 
-hebb_rule(valores.treinamento_and())
+if __name__ == "__main__":
+    hebb_rule(valores.treinamento_and())
