@@ -20,8 +20,8 @@ def hebb_rule(dados):
         y = dado[1]
         # Passo 4: Ajuste os pesos e o bias
         for j in range(n):
-            weight[j] = weight[j] + x[j] * y
-        weight[n] = weight[n] + y # Bias é weight[n]
+            weight[j] += x[j] * y
+        weight[n] += + y # Bias é weight[n]
         print(weight)
 
 if __name__ == "__main__":
