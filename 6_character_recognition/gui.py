@@ -1,4 +1,3 @@
-import sys
 from PyQt5 import QtCore, uic
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QComboBox, \
@@ -6,16 +5,27 @@ from PyQt5.QtWidgets import QApplication, QComboBox, \
 
 
 NUM_OF_NEURONS = 10
-
+# Para alternar, apenas delete o primeiro "#" da próxima linha
+#""" # Constantes de Endereçamento (meu pc)
+UI_FILE = r"ia-cc-2020-2-jordan\6_character_recognition\character_recognition.ui"
+ICON_BLACK = r"ia-cc-2020-2-jordan\6_character_recognition\black.png"
+ICON_WHITE = r"ia-cc-2020-2-jordan\6_character_recognition\white.png"
+FONT_A = r"ia-cc-2020-2-jordan\6_character_recognition\font_a.txt"
+""" # Constantes de Endereçamento Alternativas (outros pcs)
+UI_FILE = "character_recognition.ui"
+ICON_BLACK = "black.png"
+ICON_WHITE = "white.png"
+FONT_A = "font_a.txt"
+#"""
 
 class Gui:
     def __init__(self):
         # loading widgets elements from ui file
-        self.window = uic.loadUi(r"ia-cc-2020-2-jordan\6_0_character_recognition\character_recognition.ui")
+        self.window = uic.loadUi(UI_FILE)
 
         # Getting widget references
-        self.black = QIcon("black.png")
-        self.white = QIcon("white.png")
+        self.black = QIcon(ICON_BLACK)
+        self.white = QIcon(ICON_WHITE)
         self.character_cb = self.window.findChild(QComboBox, "characterComboBox")
         self.train_pb = self.window.findChild(QPushButton, "trainPushButton")
         self.run_pb = self.window.findChild(QPushButton, "runPushButton")
@@ -867,7 +877,7 @@ class Gui:
                 self.pixels[-1].clicked.connect(getattr(self, "on_pixel_" + str(i) + str(j) + "_clicked"))
 
     def populate_training_set(self):
-        f = open(r'ia-cc-2020-2-jordan\6_0_character_recognition\font_a.txt').readlines()
+        f = open(FONT_A).readlines()
         aux = []
         for line in f:
             if line.startswith("#"):
@@ -904,5 +914,5 @@ class Gui:
 
 if __name__ == "__main__":
     QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_ShareOpenGLContexts)
-    app = QApplication(sys.argv)
+    app = QApplication([])
     gui = Gui()
