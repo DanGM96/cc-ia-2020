@@ -20,7 +20,6 @@ class Perceptron:
         self.w_bias = w_bias
         self.theta = theta
         self.alpha = alpha
-
         self.num_of_inputs = len(self.training_set[0][0])
 
         self.init_weights()
