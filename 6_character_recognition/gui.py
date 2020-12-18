@@ -26,20 +26,19 @@ class Gui:
         # Getting widget references
         self.black = QIcon(ICON_BLACK)
         self.white = QIcon(ICON_WHITE)
-        self.character_cb = self.window.findChild(QComboBox, "characterComboBox")
         self.train_pb = self.window.findChild(QPushButton, "trainPushButton")
+        self.clear_pb = self.window.findChild(QPushButton, "clearPushButton")
+        self.character_cb = self.window.findChild(QComboBox, "characterComboBox")
         self.run_pb = self.window.findChild(QPushButton, "runPushButton")
+        self.output_lbl = self.window.findChild(QLabel, "outputLabel")
 
         # Connecting Signals
+        self.clear_pb.clicked.connect(self.on_clear_pushbutton_clicked)
         self.character_cb.currentIndexChanged.connect(self.on_character_combobox_current_index_changed)
-        self.train_pb.clicked.connect(self.on_train_pushbutton_clicked)
-        self.run_pb.clicked.connect(self.on_run_pushbutton_clicked)
 
         # Input list starts with -1 values
         # which means a white screen
         self.inputs = []
-        for i in range(80):
-            self.inputs.append(-1)
 
         # list of object pixels
         # each pixels is a QPushButton with an icon
@@ -50,17 +49,19 @@ class Gui:
         self.training_set = []
         self.font_a = []
         self.populate_training_set()
+        self.on_character_combobox_current_index_changed()
+
+    def on_clear_pushbutton_clicked(self):
+        aux = []
+        for i in range(len(self.inputs)):
+            aux.append(-1)
+        self.inputs = list(aux)
+        self.update_display()
+        self.output_lbl.setText("Recognized Numbers: ")
 
     def on_character_combobox_current_index_changed(self):
-        if int(self.character_cb.currentText()) == -1:
-            aux = []
-            for i in range(len(self.inputs)):
-                aux.append(-1)
-            self.inputs = list(aux)
-            self.update_display()
-        else:
-            self.inputs = self.font_a[int(self.character_cb.currentText())]
-            self.update_display()
+        self.inputs = self.font_a[int(self.character_cb.currentText())].copy()
+        self.update_display()
 
     def on_pixel_00_clicked(self):
         if self.pixels[0].toolTip() == "white":
@@ -861,12 +862,6 @@ class Gui:
             self.pixels[79].setIcon(self.white)
             self.pixels[79].setToolTip("white")
             self.inputs[79] = -1
-    
-    def on_run_pushbutton_clicked(self):
-        print("Run clicked")
-
-    def on_train_pushbutton_clicked(self):
-        print("Train clicked")
 
     def populate_pixels_list(self):
         # Hard coding: display 10x8
