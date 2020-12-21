@@ -1,4 +1,4 @@
-import random
+import random, string
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QApplication, QComboBox, \
     QPushButton, QLineEdit, QLabel, QSpinBox
@@ -9,11 +9,36 @@ UI_FILE = r"ia-cc-2020-2-jordan\7_crossover_operation\crossover_operation.ui"
 UI_FILE = "crossover_operation.ui"
 #"""
 
-global SIZE
+global SIZE, IS_SIMPLE_CUT
 SIZE = 10 # Padrão do tamanho dos genes
+IS_SIMPLE_CUT = True # Padrão da seleção de crossover
+
+
+def update_line_edit(mask, father_fill, mother_fill):
+    """ Atualiza a mascara e a string dos pais de acordo com o tamanho """
+    meta = ""
+    if not IS_SIMPLE_CUT:
+        meta = ">"
+
+    father_line_edit.setMaxLength(SIZE)
+    father_line_edit.setInputMask(meta + mask * SIZE)
+    current_text = father_line_edit.text()
+    father_line_edit.setText(current_text.ljust(SIZE, father_fill))
+
+    mother_line_edit.setMaxLength(SIZE)
+    mother_line_edit.setInputMask(meta + mask * SIZE)
+    current_text = mother_line_edit.text()
+    mother_line_edit.setText(current_text.ljust(SIZE, mother_fill))
+
+
+def create_random_letters():
+    """ Cria uma string aleatória de letras maiúsculas sem repetição """
+    char_set = string.ascii_uppercase[:SIZE]
+    return "".join(random.sample(char_set, SIZE))
+
 
 def create_random_bin():
-    """ Cria um novo gene binario de forma aleatória """
+    """ Cria uma string aleatória de número binário """
     # Random de 2^SIZE começando em 0
     maxint = (2 ** SIZE) - 1
     rand_int = random.randint(0, maxint)
@@ -21,22 +46,12 @@ def create_random_bin():
     # [2:] remove "0b" da string
     # zfill(SIZE) completa o lado esquerdo com zeros
     treated_rand_bin = str(rand_bin)[2:].zfill(SIZE)
+
     return treated_rand_bin
 
-def on_random_pushbutton_clicked():
-    """  """
-    father_line_edit.setText(create_random_bin())
-    mother_line_edit.setText(create_random_bin())
 
-def on_cross_pushbutton_clicked():
-    """  """
-    father = father_line_edit.text()
-    mother = mother_line_edit.text()
-    if method_combo_box.currentText() == "Corte Simples":
-        offsprings = simple_cut_crossover(father, mother)
-    else:
-        offsprings = pmx_crossover()
-
+def fill_labels(offsprings):
+    """ Coloca texto nas labels do Qt """
     son1_label_1.setText(offsprings[0])
     son1_label_2.setText(offsprings[1])
     son1_label_3.setText(offsprings[2])
@@ -44,38 +59,53 @@ def on_cross_pushbutton_clicked():
     son2_label_2.setText(offsprings[4])
     son2_label_3.setText(offsprings[5])
 
-def on_method_combobox_current_text_changed():
-    """  """
-    print('combo box changed')
 
-def update_line_edit():
-    """  """
-    line_edit = [father_line_edit, mother_line_edit]
-    for i in range(len(line_edit)):
-        line_edit[i].setMaxLength(SIZE)
-        line_edit[i].setInputMask("B" * SIZE)
-        current_text = line_edit[i].text()
-        line_edit[i].setText(current_text.zfill(SIZE))
+def on_random_pushbutton_clicked():
+    """ Atualiza as strings de entrada dos pais ao clique do botão 'Aleatório' """
+    if IS_SIMPLE_CUT:
+        father_line_edit.setText(create_random_bin())
+        mother_line_edit.setText(create_random_bin())
+    else:
+        father_line_edit.setText(create_random_letters())
+        mother_line_edit.setText(create_random_letters())
+
 
 def on_genes_spin_box_value_changed():
-    """  """
+    """ Muda o tamanho exato dos genes e atualiza as strings de entrada """
     global SIZE
     SIZE = genes_spin_box.value()
-    update_line_edit()
+    if IS_SIMPLE_CUT:
+        update_line_edit("B", "0", "1")
+    else:
+        update_line_edit("A", "A", "B")
 
-def pmx_crossover():
-    """  """
-    # Esta função está retornando 6 valores.
-    # Ao criar o corpo da função você deve ordená-los de acordo com
-    # as linhas 17 a 22 deste arquivo.
-    return '','','','','',''
 
-def simple_cut_crossover(father, mother):
-    """  """
-    cut = random.randint(0, SIZE - 1)
-    child1 = father[:cut] + mother[cut:]
-    child2 = mother[:cut] + father[cut:]
+def on_cross_pushbutton_clicked():
+    """ Inicia os processos de cruzamento """
+    father = father_line_edit.text()
+    mother = mother_line_edit.text()
+    if IS_SIMPLE_CUT:
+        offsprings = simple_cut_crossover(father, mother)
+    else:
+        offsprings = pmx_crossover(father, mother)
 
+    fill_labels(offsprings)
+
+
+def on_method_combobox_current_text_changed():
+    """ Atualiza as informações na tela do Qt de acordo com o método de crossover """
+    global IS_SIMPLE_CUT
+    if method_combo_box.currentText() == "Corte Simples":
+        IS_SIMPLE_CUT = True
+    else:
+        IS_SIMPLE_CUT = False
+    empty_str = '', '', '', '', '', ''
+    fill_labels(empty_str)
+    on_genes_spin_box_value_changed()
+
+
+def triple_split_string(child1, child2):
+    """ Divide uma string em 3 partes iguais (ou quase) """
     small = SIZE // 3
     big = SIZE - small
     _p1 = slice(0, small)
@@ -84,6 +114,57 @@ def simple_cut_crossover(father, mother):
 
     return  child1[_p1], child1[_p2], child1[_p3], \
             child2[_p1], child2[_p2], child2[_p3]
+
+
+def replace_repeated(child, aux, cut, subsize):
+    """ Substitui os caracteres repetidos pelo corte pmx """
+    child = list(child)
+    for i in range(SIZE):
+        if i >= cut and i < cut + subsize:
+            continue
+        count = 0
+        char = child[i]
+        for j in range(SIZE):
+            if child[j] == char:
+                count += 1
+        if count > 1:
+            new_char = "\0"
+            find = False
+            for j in range(subsize):
+                new_char = aux[j]
+                find = False
+                for k in range(SIZE):
+                    if child[k] == new_char:
+                        find = True
+                        break
+                if not find:
+                    break
+            child[i] = new_char
+
+    return "".join(child)
+
+
+def pmx_crossover(father, mother):
+    """ Faz o corte pmx de forma aleatória em subconjuntos """
+    subsize = 3 # subconjunto do gene, padrão é 3
+    cut = random.randint(0, SIZE - 1 * subsize)
+    aux1 = father[cut : cut + subsize]
+    aux2 = mother[cut : cut + subsize]
+    child1 = mother.replace(aux2, aux1)
+    child2 = father.replace(aux1, aux2)
+    child1 = replace_repeated(child1, aux2, cut, subsize)
+    child2 = replace_repeated(child2, aux1, cut, subsize)
+
+    return triple_split_string(child1, child2)
+
+
+def simple_cut_crossover(father, mother):
+    """ Faz o corte simples de forma aleatória """
+    cut = random.randint(0, SIZE - 1)
+    child1 = father[:cut] + mother[cut:]
+    child2 = mother[:cut] + father[cut:]
+    return triple_split_string(child1, child2)
+
 
 if __name__ == "__main__":
     QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_ShareOpenGLContexts)
