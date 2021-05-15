@@ -1,3 +1,3 @@
-# ia-cc-2020-2-jordan
+# cc-ia-2020
 
 Matéria de Inteligência Artificial

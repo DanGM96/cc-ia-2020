@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QApplication, QComboBox, \
     QPushButton, QLineEdit, QLabel, QSpinBox
 
 #"""
-UI_FILE = r"ia-cc-2020-2-jordan\7_crossover_operation\crossover_operation.ui"
+UI_FILE = r"cc-ia-2020\7_crossover_operation\crossover_operation.ui"
 """
 UI_FILE = "crossover_operation.ui"
 #"""

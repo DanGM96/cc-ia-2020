@@ -94,7 +94,7 @@ def start_running():
 if __name__ == "__main__":
     QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_ShareOpenGLContexts)
     app = QApplication([])
-    window = uic.loadUi(r"ia-cc-2020-2-jordan\5_gui_hebb_perceptron\hebb_perceptron.ui")
+    window = uic.loadUi(r"cc-ia-2020\5_gui_hebb_perceptron\hebb_perceptron.ui")
     store([0, 0, 0])
 
     # Escolha do algoritmo

@@ -154,7 +154,7 @@ if __name__ == "__main__":
     QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_ShareOpenGLContexts)
     app = QApplication([])
 
-    window = uic.loadUi(r"ia-cc-2020-2-jordan\2_logica_fuzzy\analise_de_risco.ui")
+    window = uic.loadUi(r"cc-ia-2020\2_logica_fuzzy\analise_de_risco.ui")
 
     # Entradas
     costBox = window.findChild(QSpinBox, "costSpinBox")

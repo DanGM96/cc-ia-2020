@@ -7,10 +7,10 @@ from PyQt5.QtWidgets import QApplication, QComboBox, \
 NUM_OF_NEURONS = 10
 # Para alternar, apenas delete o primeiro "#" da próxima linha
 #""" # Constantes de Endereçamento (meu pc)
-UI_FILE = r"ia-cc-2020-2-jordan\6_character_recognition\character_recognition.ui"
-ICON_BLACK = r"ia-cc-2020-2-jordan\6_character_recognition\black.png"
-ICON_WHITE = r"ia-cc-2020-2-jordan\6_character_recognition\white.png"
-FONT_A = r"ia-cc-2020-2-jordan\6_character_recognition\font_a.txt"
+UI_FILE = r"cc-ia-2020\6_character_recognition\character_recognition.ui"
+ICON_BLACK = r"cc-ia-2020\6_character_recognition\black.png"
+ICON_WHITE = r"cc-ia-2020\6_character_recognition\white.png"
+FONT_A = r"cc-ia-2020\6_character_recognition\font_a.txt"
 """ # Constantes de Endereçamento Alternativas (outros pcs)
 UI_FILE = "character_recognition.ui"
 ICON_BLACK = "black.png"
